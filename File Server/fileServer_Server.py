@@ -9,7 +9,7 @@ def Main():
     s = socket.socket()
     s.bind((host,port))
 
-    s.listen(2)
+    s.listen(5)
     print("Server started...: " + host + " : "+str(port))
 
     try:
@@ -18,23 +18,29 @@ def Main():
             print("Connection Established with IP: " + str(addr))
             t = threading.Thread(target=fetchFile, args=(sock,))
             t.start()
-    except:
+            
+    except KeyboardInterrupt:
+        s.close()
+        exit(0)
+        
+    else:
         s.close()
         
     
 def fetchFile(sock):
     fileName = sock.recv(1024).decode('utf-8')
     if os.path.isfile(fileName):
-        response = "OK. " + fileName + " exists. Size: " + str(os.path.getsize(fileName)) + ". Do you want to proceed with downloading? (y/n): "
+        fileSize = os.path.getsize(fileName)
+        response = "OK. " + fileName + " exists. Size: " + str(fileSize) + " bytes. Do you want to proceed with downloading? (y/n): "
         sock.send(response.encode('utf-8'))
         userResponse = sock.recv(1024).decode('utf-8')
         if userResponse in {'y','Y'}:
             with open(fileName, 'rb') as file:
-                bytesToSend = file.read(1024)
+                bytesToSend = file.read(fileSize)
                 sock.send(bytesToSend)
-                while bytesToSend != "":
+                '''while bytesToSend != "":
                     bytesToSend = file.read(1024)
-                    sock.send(bytesToSend)
+                    sock.send(bytesToSend)'''
         else:
             sock.send(("You Chose not to download the file").encode('utf-8'))
             sock.close()
