@@ -1,3 +1,8 @@
+#Script: FileServer_Server  #
+#Version: 1.3               #
+#Author: Vaibhav Murkute    #
+#############################
+
 import socket
 import os
 import threading
@@ -20,10 +25,15 @@ def Main():
             t.start()
             
     except KeyboardInterrupt:
+        sock.close()
         s.close()
         exit(0)
         
     else:
+        sock.close()
+        s.close()
+    finally:
+        sock.close()
         s.close()
         
     
@@ -43,13 +53,13 @@ def fetchFile(sock):
                     sock.send(bytesToSend)'''
         else:
             sock.send(("You Chose not to download the file").encode('utf-8'))
-            sock.close()
+            #sock.close()
 
     else:
         response = "File does not exist. Try again.."
         sock.send(response.encode('utf-8'))
 
-    sock.close()    
+    #sock.close()    
 
 if __name__ == '__main__':
     Main()

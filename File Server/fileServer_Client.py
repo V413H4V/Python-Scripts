@@ -1,3 +1,8 @@
+#Script: FileServer_Client  #
+#Version: 1.3               #
+#Author: Vaibhav Murkute    #
+#############################
+
 import socket
 import re
 
@@ -5,10 +10,12 @@ def Main():
     host = '127.0.0.1'
     port = 4444
     
-    s = socket.socket()
-    s.connect((host,port))
+    #s = socket.socket()
+    #s.connect((host,port))
 
     while True:
+        s = socket.socket()
+        s.connect((host,port))
         fileName = input("[+] Enter q to quit or Enter Filename: ")
         if(fileName != 'q'):
             s.sendall(fileName.encode('utf-8'))
@@ -41,6 +48,9 @@ def Main():
         else:
             s.close()
             exit(0)
+
+        s.close()
+        
     s.close()
     exit(0)
 
